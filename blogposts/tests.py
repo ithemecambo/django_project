@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+
 from blogposts.models import *
 
 
@@ -43,4 +44,31 @@ class BlogTest(TestCase):
         self.assertContains(response, 'Welcome to our blog')
         self.assertTemplateUsed(response, 'blog-detail.html')
 
+    def test_post_createview(self):
+        response = self.client.blogpost(reverse('blog-create'),
+                                        {
+                                            'title': 'New blog title',
+                                            'body': 'New blog body',
+                                            'author': self.user.id
+                                        }
+                                        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(BlogTest.objects.last().title, 'New blog title')
+        self.assertEqual(BlogPost.objects.last().body, 'New blog body')
 
+    def test_post_updateview(self):
+        response = self.client.blogpost(reverse('blog-update', args="1"),
+                                        {
+                                            'title': 'New blog title was updated',
+                                            'body': 'New blog body was updated',
+                                        }
+                                        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(BlogPost.objects.last().title, 'New blog title was updated')
+        self.assertEqual(BlogPost.objects.last().body, 'New blog body was updated')
+
+    def test_post_deleteview(self):
+        response = self.client.blogpost(reverse('blog-delete', args="1"),)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)

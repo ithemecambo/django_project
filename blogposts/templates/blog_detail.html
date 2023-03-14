@@ -4,5 +4,7 @@
         <h2>{{ blogpost.title }}</h2>
         <a href="">{{ object.author }}</a>
         <p>{{ object.body }}</p>
+        <a href="{% url 'blog-update' object.id %}"> + Edit Blog Post</a>
+        <a href="{% url 'blog-delete' object.id %}" style="margin-left: 40px;"> +  Delete Blog Post</a>
     </div>
 {% endblock content %}
